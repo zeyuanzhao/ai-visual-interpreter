@@ -9,7 +9,7 @@ const Page = () => {
   const [file, setFile] = useState<File | null>(null);
 
   return (
-    <div className="px-6 pt-8 h-screen flex flex-col">
+    <div className="px-12 pt-8 h-screen flex flex-col">
       <div>
         <h1 className="text-4xl font-bold">AI Image Interpreter</h1>
         <h2 className="text-2xl">
@@ -22,8 +22,12 @@ const Page = () => {
         </h2>
       </div>
 
-      <div className="flex-auto">
-        {file ? <Chatbot /> : <FilePicker file={file} setFile={setFile} />}
+      <div className="border flex flex-auto ">
+        {file ? (
+          <Chatbot />
+        ) : (
+          <FilePicker file={file} setFile={setFile} className="mt-12" />
+        )}
       </div>
     </div>
   );
