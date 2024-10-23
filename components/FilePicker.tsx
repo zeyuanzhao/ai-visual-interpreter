@@ -16,7 +16,7 @@ const FilePicker = ({
     <div>
       <div
         className={
-          "w-64 h-32 flex flex-row justify-center items-center border-4 border-slate-500 border-dashed hover:cursor-pointer " +
+          "w-64 h-32 flex flex-row justify-center items-center border-3 rounded-lg border-slate-500 border-dashed hover:cursor-pointer " +
           className
         }
         onClick={() => {

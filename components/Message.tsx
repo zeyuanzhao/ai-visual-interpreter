@@ -14,7 +14,7 @@ const Message = ({
     >
       <p
         className={
-          "inline-block w-auto p-2 rounded-lg " +
+          "inline-block w-auto p-1.5 px-2 rounded-lg " +
           (sender === "chatbot" ? "bg-slate-300" : "bg-blue-500 text-white")
         }
       >

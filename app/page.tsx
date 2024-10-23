@@ -24,7 +24,7 @@ const Page = () => {
 
       <div className="border flex flex-col flex-auto overflow-hidden">
         {file ? (
-          <Chatbot />
+          <Chatbot image={file} />
         ) : (
           <FilePicker file={file} setFile={setFile} className="mt-12" />
         )}
