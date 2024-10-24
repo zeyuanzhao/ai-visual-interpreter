@@ -22,7 +22,7 @@ const Page = () => {
         </h2>
       </div>
 
-      <div className="border flex flex-col flex-auto overflow-hidden">
+      <div className="flex flex-col flex-auto overflow-hidden">
         {file ? (
           <Chatbot image={file} />
         ) : (

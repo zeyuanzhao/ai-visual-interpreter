@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import Message from "./Message";
 import { Button, Input } from "@nextui-org/react";
@@ -15,49 +17,68 @@ interface MessageType {
 }
 
 const Chatbot = ({ image }: { image: File }) => {
-  const [messages, setMessages] = useState<MessageType[]>([
-    { message: "Hello! How can I help you?", sender: "chatbot" },
-  ]);
+  const [messages, setMessages] = useState<MessageType[]>([]);
   const [messageInput, setMessageInput] = useState<string>("");
-  const [chat, setChat] = useState<ChatSession>(model.startChat());
+  const [initialized, setInitialized] = useState<boolean>(false);
+  const [chat, setChat] = useState(model.startChat());
+
+  function fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64String = (reader.result as string).split(",")[1]; // The actual base64 string is after the comma
+        resolve(base64String);
+      };
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
+    });
+  }
 
   const sendPrompt = async (prompt: string | Array<string | Part>) => {
-    const res = await chat.sendMessage(prompt);
-    setMessages([
-      ...messages,
-      { message: res.response.text(), sender: "chatbot" },
-    ]);
+    console.log("PROMPT: " + JSON.stringify(prompt[0]));
+    return await chat.sendMessage(prompt);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setMessages([...messages, { message: messageInput, sender: "user" }]);
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { message: messageInput, sender: "user" },
+    ]);
     setMessageInput("");
 
-    const res = await chat.sendMessage(messageInput);
-    setMessages([
-      ...messages,
+    const res = await sendPrompt(messageInput);
+    setMessages((prevMessages) => [
+      ...prevMessages,
       { message: res.response.text(), sender: "chatbot" },
     ]);
   };
 
   useEffect(() => {
-    const initialize = async () => {
-      sendPrompt([
+    const initializeChat = async () => {
+      if (!image) return;
+      const base64Image = await fileToBase64(image);
+      const res = await sendPrompt([
         {
           inlineData: {
-            data: Buffer.from(await image.arrayBuffer()).toString("base64"),
+            data: base64Image,
             mimeType: image.type,
           },
         },
       ]);
-      initialize();
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { message: res.response.text(), sender: "chatbot" },
+      ]);
     };
-  }, []);
+    if (initialized) return;
+    setInitialized(true);
+    initializeChat();
+  }, [initialized]);
 
   return (
-    <div className="flex-1 w-full border border-black flex flex-col overflow-hidden">
-      <div className="flex-auto border pt-12 pb-4 px-2 space-y-4 overflow-auto">
+    <div className="flex-1 w-full flex flex-col overflow-hidden">
+      <div className="flex-auto pt-12 pb-4 px-2 space-y-4 overflow-auto">
         {messages.map((message, index) => (
           <Message
             message={message.message}
@@ -66,7 +87,7 @@ const Chatbot = ({ image }: { image: File }) => {
           />
         ))}
       </div>
-      <div className="p-2 pb-4 border">
+      <div className="p-2 pb-4">
         <form
           className="flex flex-row justify-between space-x-2"
           onSubmit={handleSubmit}
