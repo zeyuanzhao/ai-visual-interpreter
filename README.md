@@ -16,9 +16,11 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create a file `.env.local` in the root directory of the project. Paste in the following, where {GEMINI_API_KEY} is your API key generated from [https://aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+NEXT_PUBLIC_GEMINI_API_KEY={GEMINI_API_KEY}
+```
 
 ## Learn More
 
