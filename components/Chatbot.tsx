@@ -1,15 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Message from "./Message";
-import { Button, Input } from "@nextui-org/react";
-import {
-  ChatSession,
-  GenerateContentRequest,
-  GenerateContentResult,
-  Part,
-} from "@google/generative-ai";
 import { model } from "@/lib/gemini";
+import { Part } from "@google/generative-ai";
+import { Button, Input } from "@nextui-org/react";
+import { useEffect, useRef, useState } from "react";
+import Message from "./Message";
 
 interface MessageType {
   message: string;
@@ -19,14 +14,14 @@ interface MessageType {
 const Chatbot = ({ image }: { image: File }) => {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [messageInput, setMessageInput] = useState<string>("");
-  const [initialized, setInitialized] = useState<boolean>(false);
-  const [chat, setChat] = useState(model.startChat());
+  const isInitialized = useRef(false);
+  const [chat] = useState(model.startChat());
 
   function fileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => {
-        const base64String = (reader.result as string).split(",")[1]; // The actual base64 string is after the comma
+        const base64String = (reader.result as string).split(",")[1];
         resolve(base64String);
       };
       reader.onerror = (error) => reject(error);
@@ -56,7 +51,9 @@ const Chatbot = ({ image }: { image: File }) => {
 
   useEffect(() => {
     const initializeChat = async () => {
-      if (!image) return;
+      if (!image || isInitialized.current) return;
+      isInitialized.current = true;
+
       const base64Image = await fileToBase64(image);
       const res = await sendPrompt([
         {
@@ -71,10 +68,9 @@ const Chatbot = ({ image }: { image: File }) => {
         { message: res.response.text(), sender: "chatbot" },
       ]);
     };
-    if (initialized) return;
-    setInitialized(true);
+
     initializeChat();
-  }, [initialized]);
+  }, [image]);
 
   return (
     <div className="flex-1 w-full flex flex-col overflow-hidden">
