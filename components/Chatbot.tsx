@@ -1,83 +1,34 @@
 "use client";
 
-import { model } from "@/lib/gemini";
-import { Part } from "@google/generative-ai";
 import { Button, Input } from "@nextui-org/react";
-import { useEffect, useRef, useState } from "react";
-import Message from "./Message";
 import fileToBase64 from "@/lib/base64";
 
+// This defines a type called `MessageType` that has two properties: `message` and `sender`.
 interface MessageType {
   message: string;
   sender: "user" | "chatbot";
 }
 
-const Chatbot = ({ image }: { image: File }) => {
-  const [messages, setMessages] = useState<MessageType[]>([]);
-  const [messageInput, setMessageInput] = useState<string>("");
-  const isInitialized = useRef(false);
-  const [chat] = useState(model.startChat());
+// Defines the `Chatbot` component. Make sure that the component takes an image as a prop.
+const Chatbot = () => {
+  // Set up states for messages, message input, and chat initialization
 
-  const sendPrompt = async (prompt: string | Array<string | Part>) => {
-    console.log("PROMPT: " + JSON.stringify(prompt[0]));
-    return await chat.sendMessage(prompt);
-  };
+  // Write a function to send a prompt to the chatbot
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { message: messageInput, sender: "user" },
-    ]);
-    setMessageInput("");
+  // Write a function that handles the chat submission
 
-    const res = await sendPrompt(messageInput);
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { message: res.response.text(), sender: "chatbot" },
-    ]);
-  };
-
-  useEffect(() => {
-    const initializeChat = async () => {
-      if (!image || isInitialized.current) return;
-      isInitialized.current = true;
-
-      const base64Image = await fileToBase64(image);
-      const res = await sendPrompt([
-        {
-          inlineData: {
-            data: base64Image,
-            mimeType: image.type,
-          },
-        },
-      ]);
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { message: res.response.text(), sender: "chatbot" },
-      ]);
-    };
-
-    initializeChat();
-  }, [image]);
+  // Write a function that runs when the image is loaded and sends the image to the Gemini API
 
   return (
     <div className="flex-1 w-full flex flex-col overflow-hidden">
       <div className="flex-auto pt-12 pb-4 px-2 space-y-4 overflow-auto">
-        {messages.map((message, index) => (
-          <Message
-            message={message.message}
-            sender={message.sender}
-            key={index}
-          />
-        ))}
+        {/* Insert messages here */}
       </div>
       <div className="p-2 pb-4">
-        <form
-          className="flex flex-row justify-between space-x-2"
-          onSubmit={handleSubmit}
-        >
-          <Input value={messageInput} onValueChange={setMessageInput} />
+        {/* Call a handler once message is submitted */}
+        <form className="flex flex-row justify-between space-x-2">
+          {/* Keep track of input */}
+          <Input />
           <Button type="submit" color="primary">
             Send
           </Button>

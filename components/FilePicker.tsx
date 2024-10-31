@@ -2,15 +2,8 @@
 
 import { useRef } from "react";
 
-const FilePicker = ({
-  file,
-  setFile,
-  className,
-}: {
-  file: File | null;
-  setFile: (file: File | null) => void;
-  className?: string;
-}) => {
+// Defines the `FilePicker` component. Make sure that the component can keep track of a file and set a file.
+const FilePicker = ({ className }: { className?: string }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   return (
     <div>
@@ -23,18 +16,9 @@ const FilePicker = ({
           inputRef.current?.click();
         }}
       >
-        <input
-          type="file"
-          hidden
-          onChange={(e) => setFile(e.target.files?.[0] || null)}
-          ref={inputRef}
-          multiple={false}
-        />
-        {file ? (
-          <p className="text-md text-center">{file.name}</p>
-        ) : (
-          <p className="text-xl font-bold text-center">Click to Upload Image</p>
-        )}
+        {/* Update the input to save the file once it is submitted */}
+        <input type="file" hidden ref={inputRef} multiple={false} />
+        <p className="text-xl font-bold text-center">Click to Upload Image</p>
       </div>
     </div>
   );

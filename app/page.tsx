@@ -10,14 +10,16 @@ const Page = () => {
   const [file, setFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setImageUrl(url);
+  // This effect helps display the image once it is uploaded
 
-      return () => URL.revokeObjectURL(url);
-    }
-  }, [file]);
+  // useEffect(() => {
+  //   if (file) {
+  //     const url = URL.createObjectURL(file);
+  //     setImageUrl(url);
+
+  //     return () => URL.revokeObjectURL(url);
+  //   }
+  // }, [file]);
 
   return (
     <div className="px-12 pt-8 h-screen flex flex-col">
@@ -33,7 +35,7 @@ const Page = () => {
             </Link>
           </h2>
         </div>
-        {imageUrl && (
+        {/* {imageUrl && (
           <div className="mt-4 rounded-xl overflow-hidden">
             <Image
               src={imageUrl}
@@ -43,14 +45,16 @@ const Page = () => {
               className="object-contain"
             />
           </div>
-        )}
+        )} */}
       </div>
 
       <div className="flex flex-col flex-auto overflow-hidden">
         {file ? (
-          <Chatbot image={file} />
+          // Update the Chatbot to take the image as a prop
+          <Chatbot />
         ) : (
-          <FilePicker file={file} setFile={setFile} className="mt-12" />
+          // Update the FilePicker to keep track of the file
+          <FilePicker className="mt-12" />
         )}
       </div>
     </div>

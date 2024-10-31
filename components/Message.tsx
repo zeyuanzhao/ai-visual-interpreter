@@ -1,3 +1,4 @@
+// Defines the `Message` component. It takes in a message and a sender and displays the message in a chat bubble.
 const Message = ({
   message,
   sender,
